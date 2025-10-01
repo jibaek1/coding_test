@@ -1,0 +1,49 @@
+{{>layout/header}}
+
+<section class="board-write container">
+    <h1 class="page-title">게시글 작성</h1>
+
+    {{^sessionUser}}
+        <div class="notice">
+            글쓰기는 로그인 후 이용 가능합니다. <a href="/login-form">로그인</a>
+        </div>
+    {{/sessionUser}}
+
+    {{#sessionUser}}
+
+        <form class="write-form" action="/save" method="post" autocomplete="off">
+            <div class="form-row">
+                <label for="title">제목</label>
+                <input id="title" name="title" type="text" placeholder="제목을 입력하세요" required>
+            </div>
+
+            <div class="form-row">
+                <label for="content">내용</label>
+                <textarea id="content" name="content" rows="10" placeholder="내용을 입력하세요" required></textarea>
+            </div>
+
+            <div class="actions">
+                <a class="btn" href="index">목록</a>
+                <button type="submit" class="btn primary">등록</button>
+            </div>
+        </form>
+    {{/sessionUser}}
+</section>
+
+<style>
+    .container { max-width: 760px; margin: 32px auto; padding: 0 16px; }
+    .page-title { font-size: 24px; margin-bottom: 16px; }
+    .notice { padding: 14px 16px; border:1px solid #eee; background:#fafafa; border-radius:8px; }
+    .alert { margin-bottom:12px; padding:10px 12px; background:#fff3f3; color:#b00020; border:1px solid #ffdddd; border-radius:8px; }
+
+    .write-form { display:flex; flex-direction:column; gap:14px; }
+    .form-row { display:flex; flex-direction:column; gap:8px; }
+    .form-row input, .form-row textarea {
+      padding:10px 12px; border:1px solid #ddd; border-radius:8px; font-size:15px; box-sizing:border-box;
+    }
+    .actions { display:flex; justify-content:flex-end; gap:8px; margin-top:8px; }
+    .btn { display:inline-block; padding:10px 14px; border-radius:8px; border:1px solid #ddd; background:#f8f8f8; text-decoration:none; color:#222; }
+    .btn.primary { background:#222; color:#fff; border-color:#222; }
+</style>
+
+{{>layout/footer}}
