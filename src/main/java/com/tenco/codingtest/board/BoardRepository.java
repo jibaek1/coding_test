@@ -10,6 +10,6 @@ import java.util.Optional;
 public interface BoardRepository extends JpaRepository<Board,Long> {
     @Query("select b from Board b join fetch b.user u order by b.id desc")
     List<Board> findAllJoinUser();
-    @Query("select b from Board b join fetch b.user order by b.id desc")
+    @Query("select b from Board b join fetch b.user where b.id = :id")
     Optional<Board> findByIdJoinUser(@Param("id") Long id);
 }

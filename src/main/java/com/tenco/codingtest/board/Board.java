@@ -23,7 +23,7 @@ public class Board {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY,optional = false)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
@@ -33,6 +33,9 @@ public class Board {
 
     @CreationTimestamp
     private Timestamp createAt;
+
+    @Transient
+    private boolean isBoardOwner;
 
     public boolean isOwner(Long checkUserId) {
         return this.user.getId().equals(checkUserId);

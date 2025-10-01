@@ -33,6 +33,19 @@ public class BoardService {
         Board board = boardRepository.findByIdJoinUser(id).orElseThrow(() -> {
             return new RuntimeException("게시글을 찾을 수 없습니다.");
         });
+
+        return board;
+    }
+
+    @Transactional(readOnly = true)
+    public Board getBoardDetail(Long id,User sessionUser) {
+        Board board = boardRepository.findByIdJoinUser(id).orElseThrow(() -> {
+            return new RuntimeException("게시글을 찾을 수 없습니다.");
+        });
+        if ( sessionUser != null) {
+            boolean isBoardOwner = board.isOwner(sessionUser.getId());
+            board.setBoardOwner(isBoardOwner);
+        }
         return board;
     }
 
@@ -60,7 +73,9 @@ public class BoardService {
     }
 
     public void checkBoardOwner(Long boardId, Long userId) {
-        Board board = findById(boardId);
+        Board board = boardRepository.findById(boardId).orElseThrow(() -> {
+            return new RuntimeException("해당 게시글을 찾지 못했습니다.");
+        });
         if (!board.isOwner(userId)) {
             throw new RuntimeException("본인 게시글만 수정할 수 있습니다.");
         }

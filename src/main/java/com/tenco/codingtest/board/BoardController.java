@@ -25,21 +25,21 @@ public class BoardController {
 
     @PostMapping("/save")
     public String save(BoardRequest.SaveDTO saveDTO, HttpSession session) {
-        User sessionUser = (User)session.getAttribute("sessionUser");
-        boardService.save(saveDTO,sessionUser);
+        User sessionUser = (User) session.getAttribute("sessionUser");
+        boardService.save(saveDTO, sessionUser);
 
         return "redirect:/";
     }
 
     @GetMapping("/board/{id}/update-form")
     public String updateForm(@PathVariable(name = "id") Long boardId,
-                             HttpServletRequest request,
-                             HttpSession session) {
+                             HttpSession session, Model model) {
         User sessionUser = (User) session.getAttribute("sessionUser");
-        boardService.checkBoardOwner(boardId,sessionUser.getId());
-        request.setAttribute("boardId",sessionUser.getBoard());
+        boardService.checkBoardOwner(boardId, sessionUser.getId());
+        Board board = boardService.findById(boardId);
+        model.addAttribute("board",board);
 
-        return "redirect:/board/" + boardId;
+        return "board/update-form";
     }
 
     @PostMapping("/board/{id}/update")
@@ -47,7 +47,7 @@ public class BoardController {
                          BoardRequest.UpdateDTO updateDTO,
                          HttpSession session) {
         User sessionUser = (User) session.getAttribute("sessionUser");
-        boardService.updateById(boardId,updateDTO,sessionUser);
+        boardService.updateById(boardId, updateDTO, sessionUser);
 
         return "redirect:/board/" + boardId;
     }
@@ -55,7 +55,7 @@ public class BoardController {
     @PostMapping("/board/{id}/delete")
     public String delete(@PathVariable(name = "id") Long boardId, HttpSession session) {
         User sessionUser = (User) session.getAttribute("sessionUser");
-        boardService.deleteById(boardId,sessionUser);
+        boardService.deleteById(boardId, sessionUser);
 
         return "redirect:/";
     }
@@ -63,14 +63,15 @@ public class BoardController {
     @GetMapping("/")
     public String index(Model model) {
         List<Board> boardList = boardService.findAll();
-        model.addAttribute("boardList",boardList);
+        model.addAttribute("boardList", boardList);
 
         return "index";
     }
 
     @GetMapping("/board/{id}")
-    public String detail(@PathVariable(name = "id") Long boardId,Model model) {
-        model.addAttribute("board",boardService.findById(boardId));
+    public String detail(@PathVariable(name = "id") Long boardId, Model model, HttpSession session) {
+        User sessionUser = (User) session.getAttribute("sessionUser");
+        model.addAttribute("board",boardService.getBoardDetail(boardId, sessionUser));
 
         return "board/detail";
     }
